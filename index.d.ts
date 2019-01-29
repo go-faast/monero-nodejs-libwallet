@@ -71,7 +71,7 @@ declare namespace monero {
   };
 
   interface Wallet {
-    address(): string;
+    address(accountIndex?: number): string;
     seed(): string;
     on(event: 'newBlock', callback: (height: number) => void): Wallet;
     on(
@@ -101,8 +101,8 @@ declare namespace monero {
     connected(): boolean;
     setTrustedDaemon(value: boolean): Wallet;
     trustedDaemon(): boolean;
-    balance(): string;
-    unlockedBalance(): string;
+    balance(accountIndex?: number): string;
+    unlockedBalance(accountIndex?: number): string;
     blockchainHeight(): number;
     daemonBlockchainHeight(): number;
     synchronized(): boolean;
@@ -150,5 +150,5 @@ declare namespace monero {
   function walletExists(path: string): boolean;
   function genPaymentId(): string;
   function paymentIdValid(paymentId: string): boolean;
-  function addressValid(address: string): boolean;
+  function addressValid(address: string, network: string): boolean;
 }

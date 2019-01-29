@@ -340,7 +340,18 @@ NAN_METHOD(Wallet::Close)  {
 NAN_METHOD(Wallet::Address) {
     Wallet* obj = ObjectWrap::Unwrap<Wallet>(info.Holder());
 
-    auto buf = obj->wallet_->address();
+    if (info.Length() > 1 && !info[0]->IsNumber()) {
+        Nan::ThrowTypeError("Function accepts one optional integer argument");
+        return;
+    }
+
+    std::string buf;
+    if (info.Length() == 0) {
+        buf = obj->wallet_->address();
+    } else {
+        uint32_t accountIndex = info[0]->ToUint32(Nan::GetCurrentContext()).ToLocalChecked()->Value();
+        buf = obj->wallet_->address(accountIndex);
+    }
     auto addr = Nan::New(buf.c_str()).ToLocalChecked();
 
     info.GetReturnValue().Set(addr);
@@ -517,15 +528,39 @@ NAN_METHOD(Wallet::TrustedDaemon) {
 
 NAN_METHOD(Wallet::Balance) {
     Wallet* obj = ObjectWrap::Unwrap<Wallet>(info.Holder());
+    
+    if (info.Length() > 1 && !info[0]->IsNumber()) {
+        Nan::ThrowTypeError("Function accepts one optional integer argument");
+        return;
+    }
 
-    // it seems v8 doesn't have uint64
-    info.GetReturnValue().Set(Nan::New(std::to_string(obj->wallet_->balanceAll()).c_str()).ToLocalChecked());
+    uint64_t balance;
+    if (info.Length() == 0) {
+        // it seems v8 doesn't have uint64
+        balance = obj->wallet_->balanceAll();
+    } else {
+        uint32_t accountIndex = info[0]->ToUint32(Nan::GetCurrentContext()).ToLocalChecked()->Value();
+        balance = obj->wallet_->balance(accountIndex);
+    }
+    info.GetReturnValue().Set(Nan::New(std::to_string(balance).c_str()).ToLocalChecked());
 }
 
 NAN_METHOD(Wallet::UnlockedBalance) {
     Wallet* obj = ObjectWrap::Unwrap<Wallet>(info.Holder());
 
-    info.GetReturnValue().Set(Nan::New(std::to_string(obj->wallet_->unlockedBalanceAll()).c_str()).ToLocalChecked());
+    if (info.Length() > 1 && !info[0]->IsNumber()) {
+        Nan::ThrowTypeError("Function accepts one optional integer argument");
+        return;
+    }
+
+    uint64_t unlockedBalance;
+    if (info.Length() == 0) {
+        unlockedBalance = obj->wallet_->unlockedBalanceAll();
+    } else {
+        uint32_t accountIndex = info[0]->ToUint32(Nan::GetCurrentContext()).ToLocalChecked()->Value();
+        unlockedBalance = obj->wallet_->unlockedBalance(accountIndex);
+    }
+    info.GetReturnValue().Set(Nan::New(std::to_string(unlockedBalance).c_str()).ToLocalChecked());
 }
 
 NAN_METHOD(Wallet::BlockChainHeight) {
