@@ -12,14 +12,20 @@ THREADS?=1
 all: binding.gyp deps
 	node_modules/.bin/node-pre-gyp configure build
 
-.PHONY: clean
-clean:
-	rm -rf boost
+.PHONY: clean-artifacts
+clean-artifacts:
 	rm -rf monero/build
-	rm -rf ${BOOST_DIRNAME}
 	rm -rf deps
 	rm -rf build
 	rm -rf lib
+
+.PHONY: clean-boost
+clean-boost:
+	rm -rf boost
+	rm -rf ${BOOST_DIRNAME}
+
+.PHONY: clean
+clean: clean-boost clean-artifacts
 
 ${BOOST_DIRNAME}.tar.bz2: 
 	curl -L -o "${BOOST_DIRNAME}.tar.bz2" \
