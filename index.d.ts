@@ -60,13 +60,13 @@ declare namespace monero {
     amount: string;
     fee: string;
     blockHeight: number;
-    subAddresses: string;
-    subAddrAccount: string;
+    subAddresses: number[];
+    subAddrAccount: number;
     label: string;
     confirmations: number;
     unlockTime: number;
     timestamp: number;
-    paymentId: number;
+    paymentId: string;
     transfers: Transfer[];
   };
 
