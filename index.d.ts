@@ -86,6 +86,7 @@ declare namespace monero {
       amount: string,
       paymentId?: string,
       mixin?: number,
+      accountIndex?: number,
     }): Promise<Transaction>;
     history(): TransactionInfo[];
     path(): string;
